@@ -1,15 +1,14 @@
 package org.example.basicauth.Controller;
-
-
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import org.example.basicauth.Jwt.JwtUtil;
-import org.example.basicauth.Model.Role;
 import org.example.basicauth.Model.User;
 import org.example.basicauth.Repository.UserRepository;
 import org.example.basicauth.Service.TokenService;
 import org.example.basicauth.Service.UserDetailsServiceImpl;
+import org.example.basicauth.dto.AuthRequest;
+import org.example.basicauth.dto.AuthResponse;
+import org.example.basicauth.dto.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,19 +71,19 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         String token = extractToken(request);
 
         // Log token
-        System.out.println("Extracted token: " + token);
+        System.out.println(STR."Extracted token: \{token}");
 
         // Get the current authentication
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication);
+        System.out.println(STR."Authentication: \{authentication}");
 
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            System.out.println("Authenticated username: " + username);
+            System.out.println(STR."Authenticated username: \{username}");
 
             // Check if the token is valid and matches the logged-in user
             if (token != null && tokenService.isTokenValid(token, username)) {
@@ -109,27 +108,5 @@ public class AuthController {
 
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class RegisterRequest {
-    private String username;
-    private String password;
-    private Role role;
-}
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class AuthRequest {
-    private String username;
-    private String password;
-}
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class AuthResponse {
-    private String token;
-    private String message;
-}
