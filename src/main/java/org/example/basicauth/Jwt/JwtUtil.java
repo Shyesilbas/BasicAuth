@@ -43,17 +43,17 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails , int expiryHours) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername() , expiryHours);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject , int expiryHours) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 saat geçerlilik süresi
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiryHours)) // 10 saat geçerlilik süresi
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -1,5 +1,6 @@
 package org.example.basicauth.Config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.basicauth.Jwt.JwtAuthenticationFilter;
 import org.example.basicauth.Service.UserDetailsServiceImpl;
@@ -29,6 +30,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     http
             .csrf(AbstractHttpConfigurer::disable)
+            .logout(logout->logout
+                    .logoutUrl("auth/logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    })
+            )
+
             .authorizeHttpRequests(auth->auth
                     .requestMatchers("/admin/**").hasAuthority("ADMIN")
                     .requestMatchers("/user/**").hasAuthority("USER")
