@@ -20,9 +20,14 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final JwtUtil jwtUtil;
 
+    public boolean hasActiveToken(String username) {
+        Optional<Token> activeTokenOpt = tokenRepository.findByUsernameAndStatus(username, TokenStatus.ACTIVE);
+        return activeTokenOpt.isPresent();
+    }
 
-    public void saveToken(String token, int expiryHours) {
+    public void saveToken(String token, int expiryHours , String username) {
         Token newToken = new Token();
+        newToken.setUsername(username);
         newToken.setToken(token);
         newToken.setStatus(TokenStatus.ACTIVE);
         newToken.setCreatedAt(LocalDateTime.now());
@@ -38,6 +43,7 @@ public class TokenService {
             tokenRepository.save(t);
 
             BlackListedToken blackListedToken = new BlackListedToken();
+            blackListedToken.setUsername(t.getUsername());
             blackListedToken.setToken(token);
             blackListedToken.setExpirationDate();
             blackListTokenRepository.save(blackListedToken);

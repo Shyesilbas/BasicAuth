@@ -57,11 +57,14 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body(new AuthResponse(null, "Bad Credentials or you are not authorized"));
         }
+        if (tokenService.hasActiveToken(request.getUsername())) {
+            return ResponseEntity.status(403).body(new AuthResponse(null, "You have already an active session."));
+        }
 
         final UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
         final int expiryHours = 10;
         final String jwt = jwtUtil.generateToken(userDetails,expiryHours);
-        tokenService.saveToken(jwt,expiryHours);
+        tokenService.saveToken(jwt,expiryHours, userDetails.getUsername());
 
 
 

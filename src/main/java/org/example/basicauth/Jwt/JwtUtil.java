@@ -4,11 +4,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,14 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = java.util.Base64.getDecoder().decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -32,29 +39,34 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            // Handle token parsing errors
+            throw new RuntimeException("Invalid token", e);
+        }
     }
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails , int expiryHours) {
+    public String generateToken(UserDetails userDetails, int expiryHours) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername() , expiryHours);
+        return createToken(claims, userDetails.getUsername(), expiryHours);
     }
 
-    private String createToken(Map<String, Object> claims, String subject , int expiryHours) {
+    private String createToken(Map<String, Object> claims, String subject, int expiryHours) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiryHours)) // 10 saat geçerlilik süresi
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiryHours)) // expiryHours in hours
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
