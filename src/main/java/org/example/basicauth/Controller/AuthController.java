@@ -4,6 +4,8 @@ import lombok.*;
 import org.example.basicauth.Jwt.JwtUtil;
 import org.example.basicauth.Model.User;
 import org.example.basicauth.Repository.UserRepository;
+import org.example.basicauth.Service.CombinedUserDetailsService;
+import org.example.basicauth.Service.CustomerDetailsServiceImpl;
 import org.example.basicauth.Service.TokenService;
 import org.example.basicauth.Service.UserDetailsServiceImpl;
 import org.example.basicauth.dto.AuthRequest;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsServiceImpl customUserDetailsService;
+    private final CombinedUserDetailsService combinedUserDetailsService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -59,8 +62,8 @@ public class AuthController {
         if (tokenService.hasActiveToken(request.getUsername())) {
             return ResponseEntity.status(403).body(new AuthResponse(null, "You have already an active session."));
         }
+        UserDetails userDetails = combinedUserDetailsService.loadUserByUsername(request.getUsername());
 
-        final UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
         final int expiryHours = 10;
         final String jwt = jwtUtil.generateToken(userDetails,expiryHours);
         tokenService.saveToken(jwt,expiryHours, userDetails.getUsername());

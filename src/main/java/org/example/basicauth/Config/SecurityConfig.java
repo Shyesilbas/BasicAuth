@@ -3,6 +3,7 @@ package org.example.basicauth.Config;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.basicauth.Jwt.JwtAuthenticationFilter;
+import org.example.basicauth.Service.CombinedUserDetailsService;
 import org.example.basicauth.Service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CombinedUserDetailsService combinedUserDetailsService;
 @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     http
@@ -56,7 +58,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(combinedUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
