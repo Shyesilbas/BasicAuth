@@ -23,6 +23,7 @@ public class Customer {
     private String email;
     private String profession;
     private BigDecimal salary;
+    private int activeAccounts = 0;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.CUSTOMER;
