@@ -44,6 +44,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth->auth
                     .requestMatchers("/admin/**").hasAuthority("ADMIN")
                     .requestMatchers("/user/**").hasAuthority("USER")
+                    .requestMatchers("/customer/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
             )

@@ -8,6 +8,8 @@ import org.example.basicauth.dto.CreateCustomer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
@@ -33,6 +35,14 @@ public class CustomerService {
         customer.setProfession(createCustomer.getProfession());
 
         return customerRepository.save(customer);
+    }
+    public Customer getCustomer(String username){
+        return customerRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+    }
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
     }
 
 }
