@@ -29,6 +29,9 @@ public class Customer {
     private BigDecimal salary;
     private int activeAccounts = 0;
 
+    @Column(name = "activeCC")
+    private int activeCreditCards = 0;
+
     @Enumerated(EnumType.STRING)
     private Role role = Role.CUSTOMER;
 
