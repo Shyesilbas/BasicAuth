@@ -27,6 +27,6 @@ public class Account {
     private Currency currency;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username", nullable = false , referencedColumnName = "username")
+    @JoinColumn(name = "accountHolder", nullable = false , referencedColumnName = "username")
     private Customer customer;
 }

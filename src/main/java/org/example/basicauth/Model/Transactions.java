@@ -26,7 +26,7 @@ public class Transactions {
     private TransactionType transactionType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username", nullable = false , referencedColumnName = "username")
+    @JoinColumn(name = "transactionBy", nullable = false , referencedColumnName = "username")
     private Customer customer;
 
 }

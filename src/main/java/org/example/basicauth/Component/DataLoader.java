@@ -1,9 +1,7 @@
 package org.example.basicauth.Component;
 
 import lombok.RequiredArgsConstructor;
-import org.example.basicauth.Model.Customer;
-import org.example.basicauth.Model.Role;
-import org.example.basicauth.Model.User;
+import org.example.basicauth.Model.*;
 import org.example.basicauth.Repository.CustomerRepository;
 import org.example.basicauth.Repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
