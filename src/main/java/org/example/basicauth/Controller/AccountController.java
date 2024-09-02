@@ -21,9 +21,9 @@ public class AccountController {
     private final AccountRepository accountRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<Account> createAccount(@RequestBody CreateAccount createAccount) {
-        Account account = accountService.createAccount(createAccount);
-        return ResponseEntity.ok(account);
+    public ResponseEntity<?> createAccount(@RequestBody CreateAccount createAccount) {
+        accountService.createAccount(createAccount);
+        return ResponseEntity.ok("Account created Successfully");
     }
     @DeleteMapping("/delete/{accountNumber}")
     public ResponseEntity<?> deleteAccount( @PathVariable  Long accountNumber){
