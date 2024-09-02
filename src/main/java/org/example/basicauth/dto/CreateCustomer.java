@@ -11,5 +11,5 @@ public class CreateCustomer {
     private String password;
     private String email;
     private String profession;
-    private BigDecimal Salary;
+    private BigDecimal salary;
 }

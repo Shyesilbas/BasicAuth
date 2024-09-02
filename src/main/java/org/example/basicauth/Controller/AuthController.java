@@ -31,6 +31,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
+    /* register
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
@@ -46,6 +47,7 @@ public class AuthController {
         userRepository.save(user);
         return ResponseEntity.ok("register successful");
     }
+     */
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -67,9 +69,6 @@ public class AuthController {
         final int expiryHours = 10;
         final String jwt = jwtUtil.generateToken(userDetails,expiryHours);
         tokenService.saveToken(jwt,expiryHours, userDetails.getUsername());
-
-
-
         return ResponseEntity.ok(new AuthResponse(jwt, "Login Successful"));
     }
 

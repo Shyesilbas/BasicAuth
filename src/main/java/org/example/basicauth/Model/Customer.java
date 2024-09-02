@@ -22,7 +22,7 @@ public class Customer {
     private String password;
     private String email;
     private String profession;
-    private BigDecimal Salary;
+    private BigDecimal salary;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.CUSTOMER;
