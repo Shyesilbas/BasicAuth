@@ -21,7 +21,7 @@ public class AccountService {
     private final CustomerRepository customerRepository;
 
     @Transactional
-    public Account createAccount(CreateAccount createAccount) {
+    public void createAccount(CreateAccount createAccount) {
         // Get the currently authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -42,7 +42,7 @@ public class AccountService {
         account.setAccountType(createAccount.getAccountType());
         customer.setActiveAccounts(customer.getActiveAccounts()+1);
 
-        return accountRepository.save(account);
+        accountRepository.save(account);
     }
  @Transactional
  public void  deleteAccount (Long accountNumber){

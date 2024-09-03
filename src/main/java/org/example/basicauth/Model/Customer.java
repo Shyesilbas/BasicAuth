@@ -28,6 +28,7 @@ public class Customer {
     private String profession;
     private BigDecimal salary;
     private int activeAccounts = 0;
+    private int activeLoans = 0;
 
     @Column(name = "activeCC")
     private int activeCreditCards = 0;

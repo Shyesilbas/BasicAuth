@@ -48,6 +48,7 @@ public class SecurityConfig {
                     .requestMatchers("/account/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/transaction/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/creditCard/**").hasAuthority("CUSTOMER")
+                    .requestMatchers("/loanApplication/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/auth/**").permitAll()
                     .anyRequest().authenticated()
             )

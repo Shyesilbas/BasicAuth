@@ -44,6 +44,7 @@ public class CreditCardService {
         newCard.setCvv(cvv);
         newCard.setCardLimit(createCreditCard.getCardLimit());
         newCard.setExpirationDate(LocalDate.now().plusYears(5));
+        newCard.setCardType(createCreditCard.getCardType());
         newCard.setCustomer(customer);
         customer.setActiveCreditCards(customer.getActiveCreditCards()+1);
         return creditCardRepository.save(newCard);
