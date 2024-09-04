@@ -26,27 +26,26 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject); // gets the username from token
     }
 
     public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration); // gets the expiration Date from token
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+        final Claims claims = extractAllClaims(token); // opportunity to extract claim from token
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        try {
+        try { // extract all claims from the token
             return Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            // Handle token parsing errors
             throw new RuntimeException("Invalid token", e);
         }
     }

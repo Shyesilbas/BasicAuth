@@ -2,6 +2,7 @@ package org.example.basicauth.Config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.basicauth.Exception.CustomAuthenticationEntryPoint;
 import org.example.basicauth.Jwt.JwtAuthenticationFilter;
 import org.example.basicauth.Service.CombinedUserDetailsService;
 import org.example.basicauth.Service.UserDetailsServiceImpl;
@@ -28,10 +29,14 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CombinedUserDetailsService combinedUserDetailsService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     http
             .csrf(AbstractHttpConfigurer::disable)
+            .exceptionHandling(exception-> exception
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+            )
             .logout(logout->logout
                     .logoutUrl("auth/logout")
                     .invalidateHttpSession(true)

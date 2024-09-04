@@ -1,10 +1,14 @@
 package org.example.basicauth.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.basicauth.Exception.UnAuthorizedException;
 import org.example.basicauth.Model.Customer;
 import org.example.basicauth.Repository.CustomerRepository;
 
 import org.example.basicauth.dto.CreateCustomer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +40,15 @@ public class CustomerService {
 
         return customerRepository.save(customer);
     }
-    public Customer getCustomer(String username){
+    public Customer getCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new UnAuthorizedException("You have to login.");
+        }
+        String username = authentication.getName();
+
         return customerRepository.findByUsername(username)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
     }
 
     public List<Customer> getAllCustomers(){
