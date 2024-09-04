@@ -137,7 +137,7 @@ public class LoanApplicationService {
 
         paymentAccount.setBalance(paymentAccount.getBalance().subtract(monthlyPayment));
         loanApplication.setTotalPaid(loanApplication.getTotalPaid().add(monthlyPayment));
-        loanApplication.setInstallment(loanApplication.getInstallment()-1);
+        loanApplication.setInstallmentLeft(loanApplication.getInstallment()-1);
         loanApplication.setRemainingAmount(loanApplication.getTotalRepaymentWithInterestRate().subtract(loanApplication.getTotalPaid()));
 
 
@@ -146,6 +146,7 @@ public class LoanApplicationService {
             loanApplication.setAmount(BigDecimal.ZERO);
             loanApplication.setRemainingAmount(BigDecimal.ZERO);
             loanApplication.getCustomer().setActiveLoans(loanApplication.getCustomer().getActiveLoans() - 1);
+            loanApplication.setInstallmentLeft(0);
             customerRepository.save(loanApplication.getCustomer());
         }
 
@@ -189,7 +190,8 @@ public class LoanApplicationService {
         loanApplication.setTotalPaid(loanApplication.getTotalRepaymentWithInterestRate());
         loanApplication.setRemainingAmount(BigDecimal.ZERO);
         loanApplication.setPaymentStatus(LoanPaymentStatus.PAID_OFF);
-        loanApplication.setInstallment(0);
+        loanApplication.setInstallment(loanApplication.getInstallment());
+        loanApplication.setInstallmentLeft(0);
 
         customer.setActiveLoans(customer.getActiveLoans() - 1);
         Transactions transactions = new Transactions();

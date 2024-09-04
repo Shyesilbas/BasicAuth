@@ -39,6 +39,7 @@ public class LoanApplication {
 
     private BigDecimal totalRepaymentWithInterestRate;
     private BigDecimal monthlyPayment;
+    private int installmentLeft = installment;
 
     @Enumerated(EnumType.STRING)
     private LoanPaymentStatus paymentStatus;
@@ -52,6 +53,9 @@ public class LoanApplication {
         this.totalRepaymentWithInterestRate = totalRepayment;
         this.monthlyPayment = totalRepayment.divide(BigDecimal.valueOf(installment), RoundingMode.HALF_UP);
         this.remainingAmount = totalRepayment;
+        if (this.installmentLeft == 0) {
+            this.installmentLeft = this.installment;
+        }
     }
 
 }

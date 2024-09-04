@@ -10,6 +10,7 @@ import org.example.basicauth.Repository.TokenRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,4 +64,19 @@ public class TokenService {
         }
         return false;
     }
+    public void checkAndExpireTokens() {
+        List<Token> tokens = tokenRepository.findAll();
+
+        for (Token token : tokens) {
+            if (token.getExpiresAt().isBefore(LocalDateTime.now()) && token.getStatus() == TokenStatus.ACTIVE) {
+                token.setStatus(TokenStatus.EXPIRED);
+                tokenRepository.save(token);
+
+                BlackListedToken blackListedToken = new BlackListedToken();
+                blackListedToken.setToken(token.getToken());
+                blackListTokenRepository.save(blackListedToken);
+            }
+        }
+    }
+
 }
