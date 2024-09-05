@@ -78,7 +78,7 @@ public class AuthController {
         final int expiryHours = 10;
         final String jwt = jwtUtil.generateToken(userDetails,expiryHours);
         tokenService.saveToken(jwt,expiryHours, userDetails.getUsername());
-        return ResponseEntity.ok(new AuthResponse(jwt, "Login Successful"));
+        return ResponseEntity.ok(new AuthResponse(jwt, STR."Welcome Back , \{request.getUsername()}"));
     }
 
     @PostMapping("/logout")
@@ -101,10 +101,9 @@ public class AuthController {
                 tokenService.invalidateToken(token);
                 SecurityContextHolder.clearContext();
                 request.getSession().invalidate();
-                return ResponseEntity.ok("Successfully logged out");
+                return ResponseEntity.ok(STR."See you Later , \{username}");
             }
         }
-
         return ResponseEntity.status(401).body("No active session found or token is missing");
     }
 
