@@ -2,7 +2,9 @@ package org.example.basicauth.Controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
 import org.example.basicauth.Jwt.JwtUtil;
+import org.example.basicauth.Model.Customer;
 import org.example.basicauth.Model.User;
+import org.example.basicauth.Repository.CustomerRepository;
 import org.example.basicauth.Repository.UserRepository;
 import org.example.basicauth.Service.CombinedUserDetailsService;
 import org.example.basicauth.Service.CustomerDetailsServiceImpl;
@@ -29,25 +31,32 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CustomerRepository customerRepository;
     private final TokenService tokenService;
 
-    /* register
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("USERNAME EXISTS");
+        if (customerRepository.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body("Customer EXISTS");
+        }
+        if(customerRepository.findByPersonalId(request.getPersonalId()).isPresent()){
+            return ResponseEntity.badRequest().body("Customer exists!");
         }
 
-        User user = User.builder()
+        Customer customer = Customer.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .email(request.getEmail())
+                .profession(request.getProfession())
+                .salary(request.getSalary())
+                .personalId(request.getPersonalId())
                 .build();
 
-        userRepository.save(user);
-        return ResponseEntity.ok("register successful");
+        customerRepository.save(customer);
+        return ResponseEntity.ok("Customer register successful");
     }
-     */
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {

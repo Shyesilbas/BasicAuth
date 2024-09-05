@@ -54,7 +54,7 @@ public class SecurityConfig {
                     .requestMatchers("/transaction/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/creditCard/**").hasAuthority("CUSTOMER")
                     .requestMatchers("/loanApplication/**").hasAuthority("CUSTOMER")
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/auth/**", "/login", "/login.html").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
