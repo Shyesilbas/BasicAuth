@@ -20,7 +20,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
 
-        String jsonResponse = "{\"message\": \"Unauthorized access: Please log in to access this resource.\", \"status\": 401}";
+        String jsonResponse = "{\"message\": \"Unauthorized access!\", \"status\": 401}";
         response.getWriter().write(jsonResponse);
     }
 
