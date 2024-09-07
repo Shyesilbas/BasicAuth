@@ -56,6 +56,7 @@ public class TransactionService {
         deposit.setAmount(depositRequest.getAmount());
         deposit.setDescription(depositRequest.getDescription());
         deposit.setTransactionType(TransactionType.DEPOSIT);
+        deposit.setDate();
         deposit.setCustomer(customer);
 
         return transactionRepository.save(deposit);
@@ -94,6 +95,7 @@ public class TransactionService {
         withdraw.setAmount(withdrawRequest.getAmount());
         withdraw.setDescription(withdrawRequest.getDescription());
         withdraw.setTransactionType(TransactionType.WITHDRAW);
+        withdraw.setDate();
         withdraw.setCustomer(customer);
 
         return transactionRepository.save(withdraw);
@@ -143,6 +145,7 @@ public class TransactionService {
             transfer.setAmount(transferRequest.getAmount());
             transfer.setDescription(transferRequest.getDescription());
             transfer.setTransactionType(TransactionType.TRANSFER);
+            transfer.setDate();
             transfer.setCustomer(customer);
 
             return transactionRepository.save(transfer);

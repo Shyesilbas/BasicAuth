@@ -1,5 +1,6 @@
 package org.example.basicauth.Model;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -28,5 +30,12 @@ public class Transactions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transactionBy", nullable = false , referencedColumnName = "username")
     private Customer customer;
+
+    private LocalDate date;
+
+    @PostConstruct
+    public void setDate(){
+        this.date=LocalDate.now();
+    }
 
 }

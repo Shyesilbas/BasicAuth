@@ -40,8 +40,9 @@ public class AccountService {
         account.setCurrency(createAccount.getCurrency());
         account.setCustomer(customer);
         account.setAccountType(createAccount.getAccountType());
+        account.createdAt();
         customer.setActiveAccounts(customer.getActiveAccounts()+1);
-
+        customerRepository.save(customer);
         accountRepository.save(account);
     }
  @Transactional

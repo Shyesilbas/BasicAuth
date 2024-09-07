@@ -29,10 +29,6 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject); // gets the username from token
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration); // gets the expiration Date from token
-    }
-
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token); // opportunity to extract claim from token
         return claimsResolver.apply(claims);
@@ -52,6 +48,9 @@ public class JwtUtil {
 
     private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
+    }
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration); // gets the expiration Date from token
     }
 
     public String generateToken(UserDetails userDetails, int expiryHours) {
