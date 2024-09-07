@@ -6,6 +6,7 @@ import org.example.basicauth.Model.Customer;
 import org.example.basicauth.Repository.AccountRepository;
 import org.example.basicauth.Repository.CustomerRepository;
 import org.example.basicauth.dto.CreateAccount;
+import org.example.basicauth.dto.CreateAccountDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class AccountService {
     private final CustomerRepository customerRepository;
 
     @Transactional
-    public void createAccount(CreateAccount createAccount) {
+    public CreateAccountDto createAccount(CreateAccount createAccount) {
         // Get the currently authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -44,6 +45,19 @@ public class AccountService {
         customer.setActiveAccounts(customer.getActiveAccounts()+1);
         customerRepository.save(customer);
         accountRepository.save(account);
+
+        return new CreateAccountDto(
+                customer.getUsername(),
+                customer.getPersonalId(),
+                customer.getCustomerId(),
+                account.getAccountId(),
+                account.getAccountNumber(),
+                account.getAccountName(),
+                account.getBalance(),
+                account.getAccountType(),
+                account.getCurrency(),
+                STR."Account created for \{customer.getUsername()} , account number : \{account.getAccountNumber()}"
+        );
     }
  @Transactional
  public void  deleteAccount (Long accountNumber){
