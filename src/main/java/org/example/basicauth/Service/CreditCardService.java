@@ -6,6 +6,7 @@ import org.example.basicauth.Model.Customer;
 import org.example.basicauth.Repository.CreditCardRepository;
 import org.example.basicauth.Repository.CustomerRepository;
 import org.example.basicauth.dto.CreateCreditCard;
+import org.example.basicauth.dto.CreditCardDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class CreditCardService {
     private final CreditCardRepository creditCardRepository;
     private final CustomerRepository customerRepository;
 
-    public CreditCard createCreditCard(CreateCreditCard createCreditCard){
+    public CreditCardDto createCreditCard(CreateCreditCard createCreditCard){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
@@ -32,11 +33,10 @@ public class CreditCardService {
         Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(()-> new RuntimeException("Customer not found"));
 
-        // Kart Numarası ve CVV Oluşturma
+
         String cardNumber = generateUniqueCardNumber();
         String cvv = generateUniqueCVV();
 
-        // Kart Limiti Doğrulama
         validateCardLimit(createCreditCard.getCardLimit(), customer.getSalary());
 
         CreditCard newCard = new CreditCard();
@@ -47,7 +47,19 @@ public class CreditCardService {
         newCard.setCardType(createCreditCard.getCardType());
         newCard.setCustomer(customer);
         customer.setActiveCreditCards(customer.getActiveCreditCards()+1);
-        return creditCardRepository.save(newCard);
+         creditCardRepository.save(newCard);
+
+        return new CreditCardDto(
+                newCard.getCardNumber(),
+                newCard.getCvv(),
+                newCard.getCardLimit(),
+                newCard.getExpirationDate(),
+                newCard.getCardType(),
+                customer.getCustomerId(),
+                customer.getPersonalId(),
+                customer.getUsername(),
+                STR."Credit Card Created successfully with the given Info , for \{customer.getUsername()}"
+        );
     }
 
     public void deleteCreditCard(String cardNumber){
