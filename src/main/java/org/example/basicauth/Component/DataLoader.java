@@ -23,7 +23,7 @@ public class DataLoader implements CommandLineRunner {
         if (userRepository.count() == 0) {
             User admin = new User(null, "admin", passwordEncoder.encode("admin123"), Role.ADMIN);
             User user = new User(null, "user", passwordEncoder.encode("user123"), Role.USER);
-            Customer customer = new Customer(null,3593L,"customer" ,passwordEncoder.encode("customer123"),"shyesilbas@gmail.com","Engineer",new BigDecimal("50000.00"),0,0,0,Role.CUSTOMER);
+            Customer customer = new Customer(null,3593L,"customer" ,passwordEncoder.encode("customer123"),"shyesilbas@gmail.com","Engineer",new BigDecimal("50000.00"),0,0,0,0,Role.CUSTOMER);
 
             userRepository.save(admin);
             userRepository.save(user);

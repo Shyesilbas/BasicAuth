@@ -31,6 +31,7 @@ public class Customer {
     private BigDecimal salary;
     private int activeAccounts = 0;
     private int activeLoans = 0;
+    private int activeCashAdv = 0;
 
 
     @Column(name = "activeCC")

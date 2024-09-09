@@ -36,6 +36,7 @@ public class CreditCard {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
+    private BigDecimal usedLimit = new BigDecimal("0");
 
     @Enumerated(EnumType.STRING)
     private CreditCardType cardType;

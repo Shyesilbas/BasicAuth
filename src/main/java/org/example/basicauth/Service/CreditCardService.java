@@ -1,8 +1,8 @@
 package org.example.basicauth.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.basicauth.Model.CreditCard;
-import org.example.basicauth.Model.Customer;
+import org.example.basicauth.Model.*;
+import org.example.basicauth.Repository.AccountRepository;
 import org.example.basicauth.Repository.CreditCardRepository;
 import org.example.basicauth.Repository.CustomerRepository;
 import org.example.basicauth.dto.CreateCreditCard;
@@ -10,6 +10,7 @@ import org.example.basicauth.dto.CreditCardDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class CreditCardService {
     private final CreditCardRepository creditCardRepository;
     private final CustomerRepository customerRepository;
+    private final AccountRepository accountRepository;
 
     public CreditCardDto createCreditCard(CreateCreditCard createCreditCard){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -104,4 +106,9 @@ public class CreditCardService {
             throw new IllegalArgumentException("Card limit cannot exceed four times the customer's salary.");
         }
     }
+
+
 }
+
+
+

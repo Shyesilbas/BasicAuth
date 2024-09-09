@@ -2,6 +2,8 @@ package org.example.basicauth.Model;
 
 public enum LoanPaymentStatus {
 
-    PAID_OFF , ONGOING
+    PAID_OFF , ONGOING , PENDING,
+    PAID,
+    OVERDUE
 
 }
