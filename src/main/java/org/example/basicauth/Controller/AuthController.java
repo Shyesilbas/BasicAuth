@@ -1,6 +1,8 @@
 package org.example.basicauth.Controller;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
+import org.example.basicauth.Component.CustomLogoutSuccessHandler;
 import org.example.basicauth.Jwt.JwtUtil;
 import org.example.basicauth.Model.Customer;
 import org.example.basicauth.Model.User;
@@ -15,11 +17,15 @@ import org.example.basicauth.dto.AuthResponse;
 import org.example.basicauth.dto.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,10 +35,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final CombinedUserDetailsService combinedUserDetailsService;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final TokenService tokenService;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 
     @PostMapping("/register")
@@ -82,29 +88,13 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String token = extractToken(request);
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        // Log token
-        System.out.println(STR."Extracted token: \{token}");
+        customLogoutSuccessHandler.logout(request, response, authentication);
 
-        // Get the current authentication
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(STR."Authentication: \{authentication}");
-
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            System.out.println(STR."Authenticated username: \{username}");
-
-            // Check if the token is valid and matches the logged-in user
-            if (token != null && tokenService.isTokenValid(token, username)) {
-                tokenService.invalidateToken(token);
-                SecurityContextHolder.clearContext();
-                request.getSession().invalidate();
-                return ResponseEntity.ok(STR."See you Later , \{username}");
-            }
-        }
-        return ResponseEntity.status(401).body("No active session found or token is missing");
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("message", "Logout successful");
+        return ResponseEntity.ok(responseBody);
     }
 
 

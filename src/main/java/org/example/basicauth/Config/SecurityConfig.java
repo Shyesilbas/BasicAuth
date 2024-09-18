@@ -2,6 +2,7 @@ package org.example.basicauth.Config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.basicauth.Component.CustomLogoutSuccessHandler;
 import org.example.basicauth.Exception.CustomAuthenticationEntryPoint;
 import org.example.basicauth.Jwt.JwtAuthenticationFilter;
 import org.example.basicauth.Service.CombinedUserDetailsService;
@@ -26,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CombinedUserDetailsService combinedUserDetailsService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -38,12 +39,10 @@ public class SecurityConfig {
                     .authenticationEntryPoint(customAuthenticationEntryPoint)
             )
             .logout(logout->logout
-                    .logoutUrl("auth/logout")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .logoutSuccessHandler((request, response, authentication) -> {
-                        response.setStatus(HttpServletResponse.SC_OK);
-                    })
+                    .logoutUrl("/logout")
+                    .addLogoutHandler(customLogoutSuccessHandler)
+                    .logoutSuccessHandler(customLogoutSuccessHandler)
+                    .permitAll()
             )
 
             .authorizeHttpRequests(auth->auth
